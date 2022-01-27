@@ -12,14 +12,14 @@ export class CouponController {
      */
     static checkIfIsWinningCoupon(
         mysql: MySql,
-        coupon: string
+        coupon: string, campaign: string
         ): Promise<boolean> {
         const couponPromise = new Promise<boolean>((resolve, reject) => {
             mysql.getConnection().then((connection) => {
             connection.query(
                 'UPDATE winningCoupons SET handedIn = 1  WHERE coupon = "' +
                 coupon +
-                '" AND handedIn = 0;',
+                '" AND handedIn = 0 AND campaign = "' + campaign + '";',
                 function (error, results, fields) {
                 if (!error) resolve(results.changedRows == 1);
                 else reject(error);

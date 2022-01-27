@@ -59,7 +59,7 @@ export class AddressController {
                 const ip = getIPAdress(req);
 
                 if(Regex.validateCoupon(couponID)) {
-                    CouponController.checkIfIsWinningCoupon(mysql, couponID).then((isWinner) => {
+                    CouponController.checkIfIsWinningCoupon(mysql, couponID, campaignID).then((isWinner) => {
                         const coupon = {
                             coupon: couponID, 
                             campaign: campaignID,
