@@ -1,0 +1,115 @@
+<div class="container">
+    <div class="form-inline">
+        <div class="row">
+            <div class="input-column">
+                <input type="text" class="form-control" id="first_name" placeholder="First Name" required>
+                <input type="text" class="form-control" id="last_name" placeholder="Last Name" required>
+                <input type="text" class="form-control" id="address" placeholder="Adress Line" required>
+                <input type="text" class="form-control" id="city" placeholder="City" required>
+                <input type="text" class="form-control" id="postal_code" placeholder="Postal Code" required>
+            </div>
+            <div class="button-column">
+                <button type="submit" class="btn btn-default" onclick="validateCoupon()">Validate Coupon</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function validateCoupon() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/validateAddress", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+            coupon: "${coupon}",
+            campaign: "${campaign.id}",
+            first_name: document.getElementById('first_name').value,
+            last_name: document.getElementById('last_name').value,
+            address: document.getElementById('address').value,
+            city: document.getElementById('city').value,
+            postal_code: document.getElementById('postal_code').value
+        }));
+        xhr.onload = function() {
+            var data = JSON.parse(this.responseText);
+            if(data.error) {
+                alert("Error: " + data.status);
+            } else {
+                console.log(data);
+                if(data.status === "WINNER") {
+                    var winnerURL = window.location.protocol + "//" + window.location.host + "/" + "winner/${campaign.id}/";
+                    window.location.replace(winnerURL);
+                } else if(data.status === "LOSER"){
+                    var loserURL = window.location.protocol + "//" + window.location.host + "/" + "loser/${campaign.id}/";
+                    window.location.replace(loserURL);
+                }
+            }
+        }
+    }
+</script>
+<style>
+    .container {
+        padding: 4rem;
+        font-family: 'IBM Plex Mono', monospace;
+    }
+    .form-inline {
+        width: 100%;
+    }
+    .form-inline .form-group {
+        display: inline-block;
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+    .row {
+        margin: 0;
+    }
+    .row > div {
+        padding: 0;
+    }
+    .form-control {
+        border-radius: 0;
+        border: 0;
+        box-shadow: 0;
+        width: 50%;
+        float: left;
+        flex: 1 1 auto;
+        float: none;
+        height: auto;
+        margin: 0.25rem 0;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    .form-control:focus {
+        outline: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .form-control:last-child {
+        border-left: 1px solid #aaa;
+        flex: 1 1 0;
+    }
+    .btn {
+        margin: 0 0 0 0.5rem;
+        border-radius: 0;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+        background: #555;
+        color: #fff;
+        font-size: 1rem;
+        border: 0;
+        text-transform: uppercase;
+        font-weight: bold;
+        width: 50%;
+        cursor: pointer;
+    }
+    .btn + .btn {
+        background-color: #000;
+    }
+    .input-column {
+        border: 1px solid #aaa;
+        flex: 1 1 auto;
+        min-width: 60%;
+    }
+    .button-column {
+        flex: 0 0 auto;
+        min-width: 40%;
+    }
+</style>
